@@ -1,0 +1,4 @@
+#!/bin/sh
+# call script with `aman setup example`
+# setup the example service here
+log 'example setup script'
