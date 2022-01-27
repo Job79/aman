@@ -1,18 +1,18 @@
 #!/bin/sh
-# aman v1.0; copyright 2021 Job79
-# usage: aman <command> [service]
-# license: mit-license.org
 use(){ for p in "$@"; do [ -x "mod/$p" ] || continue; . "./mod/$p"; done }
-log(){ [ "$quiet" = '1' ] && return; printf '\e[0;35m[\e[0m%s\e[0;35m]\e[0m %s\n' "${2:-info}" "$1"; }
-warning() { [ "$quiet" = '1' ] && return; printf '[\e[0;33m%s\e[0m] %s\n' "${2:-warning}" "$1"; }
-error() { printf '[\e[0;31m%s\e[0m] %s\n' "${2:-error}" "$1"; }
-run() {
-    [ -z "$1" ] && error 'missing args' && exit 1
-    find 'src' -type f -path "*/${2:-*}/$1" | while read -r in
-    do
-        dir=${in%/*} 
-        [ -x "$in" ] && log "${dir##*/} $1" 'run' && . "./$in"
-    done
+log(){ [ "$quiet" != '1' ] && printf '\e[0;%sm[\e[0m%s\e[0;%sm]\e[0m %s\n' "${3:-35}" "${2:-info}" "${3:-35}" "$1"; }
+warn(){ log "$1" "${2:-warning}" 33; }
+err(){ log "$1" "${2:-error}" 31; exit 1; }
+run(){
+        [ -z "$1" ] && err 'missing args'
+        find 'src' -type f -path "*/${2:-*}/$1" | while read -r in
+        do
+                dir="${in%/*}"
+                if [ -x "$in" ]; then
+                        log "${dir##*/} $1" 'run'
+                        . "./$in"
+                fi
+        done
 }
 
 cd "$(dirname "$(realpath "$0")")" || exit
