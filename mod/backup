@@ -1,6 +1,0 @@
-#!/bin/sh
-# $1 backup name
-# $2 target folder
-# $3 compression arguments
-backup() { mkdir -p "$backup_location"; tar "${3:-czf}" "$backup_location/$1" '.' -C "$2"; }
-restore() { tar "${3:-xzf}" "$backup_location/$1" -C "$2"; }
